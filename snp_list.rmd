@@ -1,0 +1,42 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-02-28"
+---
+
+```{r install packages}
+setwd("C:/Users/torriw/Desktop/ALDH1L1_project")
+install.packages("dplyr")
+install.packages("devtools")
+BiocManager::install("biomaRt")
+library(biomaRt)                
+```
+
+```{r read in 1L1 snps}
+snps<-read.delim("26snplist.txt",header = FALSE)
+
+```
+
+```{r mart}
+#Mart used to map SNPs to Ensembl Gene IDs
+grch37.snp = useMart(biomart="ENSEMBL_MART_SNP", host="grch37.ensembl.org", path="/biomart/martservice",dataset="hsapiens_snp")
+
+
+```
+
+
+```{r Mapping SNPs }
+snptable <- getBM(attributes = c("refsnp_id","refsnp_source","chr_name","ensembl_gene_stable_id","consequence_type_tv","allele","minor_allele_freq"), 
+                      filters = "snp_filter", 
+                      values = snps , 
+                      mart = grch37.snp)
+
+```
+
+```{r write out table}
+write.csv(snptable,"C:/Users/torriw/Desktop/ALDH1L1_project/snptable_1L1.csv",row.names = FALSE)
+
+
+
+```
+
